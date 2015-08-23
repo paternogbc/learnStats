@@ -1,0 +1,8 @@
+name: distributions
+account: paternogbc
+server: shinyapps.io
+bundleId: 248477
+url: https://paternogbc.shinyapps.io/distributions
+when: 1440331710.52186
+asMultiple: FALSE
+asStatic: FALSE
