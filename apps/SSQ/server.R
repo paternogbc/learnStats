@@ -3,6 +3,8 @@ library(ggplot2)
 library(shinydashboard)
 library(data.table)
 library(grid)
+library(markdown)
+library(xtable)
 
 
 server <- function(input, output) {
@@ -12,8 +14,8 @@ server <- function(input, output) {
   slope <- input$slope
   SD <- input$SD
   sample <- input$sample
-  x <- 1:sample
-  y <- slope * (x+rnorm(n = sample, mean = 1, sd = SD ))
+  x <- 1:sample+rnorm(n=sample, mean= 0.001,sd=0.1)
+  y <- slope * (x) + rnorm(n = sample, mean = 3, sd = SD )
   mod <- lm(y ~ x, data.frame(y,x))
   ypred <- predict(mod)
   Rawdata <- data.frame(y, x, ypred)
@@ -26,8 +28,9 @@ server <- function(input, output) {
   ypred <- predict(mod)
   dat$ypred <- ypred
   SST <- sum((dat$y - Y)^2)
-  SSE <- sum((dat$y - ypred)^2)
+  SSE <- round(sum((dat$y - ypred)^2), digits = 5)
   SSA <- SST - SSE
+
   SSQ <- data.frame(SS = c("SS total","SS regression","SS error"),
                     value = as.numeric(c(SST, SSA, SSE)/SST)*100)
   SSQ$SS <- factor(SSQ$SS, as.character(SSQ$SS))
@@ -87,13 +90,19 @@ server <- function(input, output) {
 
  })
 
- ### Second output "boxplot"
- output$anova <- renderPrint({
+ ### Second output "anova"
+ output$anova <- renderTable({
   anova(lm(y ~ x, Rawdata()))
+
  })
- output$summary <- renderPrint({
+
+ output$summary <- renderTable({
   summary(lm(y ~ x, Rawdata()))
  })
+
+ output$data <- renderDataTable(
+  Rawdata()[c(1,2)], options = list(
+  searchable = FALSE, searching = FALSE, pageLength = 10))
 
 }
 
