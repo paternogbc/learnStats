@@ -4,7 +4,7 @@ library(shinydashboard)
 library(data.table)
 library(grid)
 library(markdown)
-library(xtable)
+
 
 
 server <- function(input, output) {
@@ -14,8 +14,8 @@ server <- function(input, output) {
   slope <- input$slope
   SD <- input$SD
   sample <- input$sample
-  x <- 1:sample+rnorm(n=sample, mean= 0.001,sd=0.1)
-  y <- slope * (x) + rnorm(n = sample, mean = 3, sd = SD )
+  x <- round(1:sample+rnorm(n=sample, mean= 0.001,sd=0.1), digits = 2)
+  y <- round(slope * (x) + rnorm(n = sample, mean = 3, sd = SD ), digits = 2)
   mod <- lm(y ~ x, data.frame(y,x))
   ypred <- predict(mod)
   Rawdata <- data.frame(y, x, ypred)
@@ -31,7 +31,7 @@ server <- function(input, output) {
   SSE <- round(sum((dat$y - ypred)^2), digits = 5)
   SSA <- SST - SSE
 
-  SSQ <- data.frame(SS = c("SS total","SS regression","SS error"),
+  SSQ <- data.frame(SS = c("Total","Regression","Error"),
                     value = as.numeric(c(SST, SSA, SSE)/SST)*100)
   SSQ$SS <- factor(SSQ$SS, as.character(SSQ$SS))
   SSdata <- data.frame(SS = factor(SSQ$SS, as.character(SSQ$SS)),
@@ -41,29 +41,9 @@ server <- function(input, output) {
 
 
  ### First output "graphs"
- output$plot <- renderPlot({
+ output$total <- renderPlot({
   cols <- c("#619CFF", "#00BA38", "#F8766D")
-
-  ### Graphs:
-  g4 <- ggplot(SSdata(), aes(y = value, x = SS, fill = SS))+
-   geom_bar(stat = "identity")+
-   scale_fill_manual(values = cols)+
-   theme(axis.title = element_text(size = 20),
-         axis.text  = element_text(size = 0),
-         panel.background=element_rect(fill="white",colour="black")) +
-   ylab("% of variance")
-
-  g2 <- ggplot(Rawdata(), aes(x = x, y = y))+
-   geom_point(size=3) + geom_smooth(method= "lm", se = F,
-                                    colour = "black")+
-   geom_segment(xend = Rawdata()[,2], yend = Rawdata()[,3],
-                colour = "#F8766D")+
-   theme(axis.title = element_text(size = 20),
-         axis.text  = element_text(size = 18),
-         panel.background=element_rect(fill="white",colour="black"))+
-   ggtitle("SS error")
-
-  g1 <- ggplot(Rawdata(), aes(x=x,y=y))+
+  ggplot(Rawdata(), aes(x=x,y=y))+
    geom_point(size=3) +
    geom_segment(xend = Rawdata()[,2], yend = mean(Rawdata()[,1]),
                 colour = "#619CFF")+
@@ -72,10 +52,12 @@ server <- function(input, output) {
          axis.text  = element_text(size = 18),
          panel.background=element_rect(fill="white",colour="black"))+
    ggtitle("SS total")
+ })
 
-
-  # SS regression:
-  g3 <- ggplot(Rawdata(), aes(x=x,y=y))+
+ ### First output "graphs"
+ output$regression <- renderPlot({
+  cols <- c("#619CFF", "#00BA38", "#F8766D")
+  ggplot(Rawdata(), aes(x=x,y=y))+
    geom_point(alpha=0)+
    geom_smooth(method= "lm", se = F, colour = "black")+
    geom_hline(yintercept = mean(Rawdata()[,1]))+
@@ -86,9 +68,38 @@ server <- function(input, output) {
          axis.text  = element_text(size = 18),
          panel.background=element_rect(fill="white",colour="black"))+
    ggtitle("SS regression")
-  gridExtra::grid.arrange(g1, g3, g2, g4, ncol = 2)
 
  })
+
+ ### First output "graphs"
+ output$error <- renderPlot({
+  cols <- c("#619CFF", "#00BA38", "#F8766D")
+  ggplot(Rawdata(), aes(x = x, y = y))+
+   geom_point(size=3) + geom_smooth(method= "lm", se = F,
+                                    colour = "black")+
+   geom_segment(xend = Rawdata()[,2], yend = Rawdata()[,3],
+                colour = "#F8766D")+
+   theme(axis.title = element_text(size = 20),
+         axis.text  = element_text(size = 18),
+         panel.background=element_rect(fill="white",colour="black"))+
+   ggtitle("SS error")
+
+ })
+
+ output$variance <- renderPlot({
+  cols <- c("#619CFF", "#00BA38", "#F8766D")
+  ggplot(SSdata(), aes(y = value, x = SS, fill = SS))+
+   geom_bar(stat = "identity")+
+   scale_fill_manual(values = cols)+
+   theme(axis.title = element_text(size = 20),
+         axis.text.x  = element_text(size = 0),
+         axis.text.y  = element_text(size = 16),
+         panel.background=element_rect(fill="white",colour="black")) +
+   ylab("% of variance")+
+   xlab("Sum of Squares")
+
+ })
+
 
  ### Second output "anova"
  output$anova <- renderTable({
@@ -96,13 +107,24 @@ server <- function(input, output) {
 
  })
 
- output$summary <- renderTable({
-  summary(lm(y ~ x, Rawdata()))
+ output$reg <- renderPlot({
+  ggplot(Rawdata(), aes(y = y, x = x))+
+   geom_point(size = 3, colour = "blue", alpha = .5)+
+   geom_smooth(method = "lm")+
+   theme(axis.title = element_text(size = 20),
+         axis.text.x  = element_text(size = 0),
+         axis.text.y  = element_text(size = 16),
+         panel.background=element_rect(fill="white",colour="black")) +
+   ylab("Y")+
+   xlab("X")
+
  })
+
+
 
  output$data <- renderDataTable(
   Rawdata()[c(1,2)], options = list(
-  searchable = FALSE, searching = FALSE, pageLength = 10))
+  searchable = FALSE, searching = FALSE, pageLength = 15))
 
 }
 
