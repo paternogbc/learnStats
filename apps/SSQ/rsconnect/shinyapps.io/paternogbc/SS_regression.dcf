@@ -1,8 +1,8 @@
 name: SS_regression
 account: paternogbc
 server: shinyapps.io
-bundleId: 248864
+bundleId: 248890
 url: https://paternogbc.shinyapps.io/SS_regression
-when: 1440349140.55005
+when: 1440349995.6903
 asMultiple: FALSE
 asStatic: FALSE
