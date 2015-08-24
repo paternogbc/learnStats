@@ -90,6 +90,7 @@ body <- dashboardBody(
            fluidPage(
                box(width = 10,status = "success",
                 h2("About"),
+                h6(tags$code("SSregression | v1.0.0")),
                 h4("This interactive application allows you to explore how the",
                        "partition of",
                        tags$a("Sums of Squares", href = "https://en.wikipedia.org/wiki/Sum_of_squares"),
