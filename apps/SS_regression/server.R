@@ -104,8 +104,7 @@ server <- function(input, output) {
    geom_point(size = 3, colour = "blue", alpha = .5)+
    geom_smooth(method = "lm")+
    theme(axis.title = element_text(size = 20),
-         axis.text.x  = element_text(size = 0),
-         axis.text.y  = element_text(size = 16),
+         axis.text  = element_text(size = 16),
          panel.background=element_rect(fill="white",colour="black")) +
    ylab("Y")+
    xlab("X")
@@ -131,8 +130,7 @@ server <- function(input, output) {
  d1 <- ggplot(Rawdata(), aes(y = y, x = x))+
   geom_point(size = 3, colour = "blue", alpha = .5)+
   theme(axis.title = element_text(size = 20),
-        axis.text.x  = element_text(size = 0),
-        axis.text.y  = element_text(size = 16),
+        axis.text  = element_text(size = 16),
         panel.background=element_rect(fill="white",colour="black")) +
   ylab("Y")+
   xlab("X")

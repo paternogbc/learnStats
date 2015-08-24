@@ -34,10 +34,10 @@ body <- dashboardBody(
 
     sliderInput(inputId = "sample",
                     label = "Sample size",
-                    value = 30, min = 10, max = 100),
+                    value = 50, min = 10, max = 100),
     sliderInput(inputId = "slope",
                label = "Regression slope",
-               value = .5, min = -2, max = 2,step = .25),
+               value = .25, min = -2, max = 2,step = .25),
     # Sd slider:
     sliderInput(inputId = "SD",
                label = "Standard deviation",
@@ -87,9 +87,40 @@ body <- dashboardBody(
             ),
 
    tabItem(tabName = "about",
-           fluidRow(
-           box(width = 12, status = "success",
-               includeMarkdown("about.md"))
+           fluidPage(
+               box(width = 10,status = "success",
+                h2("About"),
+                h4("This interactive application allows you to explore how the",
+                       "partition of",
+                       tags$a("Sums of Squares", href = "https://en.wikipedia.org/wiki/Sum_of_squares"),
+                       "are calculated in simple linear regressions. Change one of the parameters ",
+                       "to see what happens."),
+                br(),
+                
+                h2("Want to help?"),
+                h4("Fork this",
+                   tags$a("repo", href = "https://github.com/paternogbc/learnStats/tree/master/apps/SS_regression"),
+                   "and create a pull request.",
+                   "Please, report bugs",
+                   tags$a("here", href = "https://github.com/paternogbc/learnStats/issues"),
+                   "."),
+                
+                br(),
+                
+                h2("License"),
+                h4("This software is under the public license",
+                   tags$a("AGPL-3.0 license", href = "http://opensource.org/licenses/AGPL-3.0"),
+                   "| The", tags$em("source code")," for this application is available",
+                   tags$a("here", href = "https://github.com/paternogbc/learnStats/tree/master/apps/SS_regression"),
+                   "."),
+                tags$img(height = 80, width = 80,
+                         src = "logo.png"),
+                
+                br(),
+                
+                h2("Author"),
+                h4(tags$a("Gustavo Paterno", href = "https://github.com/paternogbc"),
+                "| paternogc@gmail.com"))
            )
            )
            )
