@@ -7,8 +7,9 @@ header <- dashboardHeader(title = "Sums of Squares")
 ### SideBar:
 sidebar <- dashboardSidebar(
   sidebarMenu(
-   menuItem("Graphs", tabName = "graphs", icon = icon("dashboard")),
-   menuItem("Raw Data", tabName = "data", icon = icon("linux"))
+   menuItem("Graphs", tabName = "graphs", icon = icon("fa fa-circle")),
+   menuItem("Raw Data", tabName = "data", icon = icon("fa fa-circle")),
+   menuItem("About", tabName = "about", icon = icon("fa fa-info-circle"))
   )
  )
 
@@ -17,7 +18,7 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(
 
 
- fluidRow(column(12, includeMarkdown("open.md"))),
+
   ### Tabintes:
 
   tabItems(
@@ -33,26 +34,25 @@ body <- dashboardBody(
 
     sliderInput(inputId = "sample",
                     label = "Sample size",
-                    value = 20, min = 10, max = 30),
+                    value = 30, min = 10, max = 100),
     sliderInput(inputId = "slope",
                label = "Regression slope",
-               value = 1, min = -2, max = 2,step = .5),
+               value = .5, min = -2, max = 2,step = .25),
     # Sd slider:
     sliderInput(inputId = "SD",
                label = "Standard deviation",
-               value = 1, min = 0, max = 20)),
+               value = 3, min = 0, max = 50)),
 
     mainPanel(
 
      box(width = 6,
-         title = "Original Regression",
+         title = "Regression",
          solidHeader = TRUE, status = "primary",
-         plotOutput(outputId = "reg"),
-         tableOutput(outputId = "anova")),
+         plotOutput(outputId = "reg")),
 
 
      box(width = 6,title = "Sums of Squares Graphs",
-         solidHeader = TRUE, status = "primary",
+         solidHeader = F, status = "primary",
      tabsetPanel(type = "tabs",
                  tabPanel("Total", plotOutput("total")),
                  tabPanel("Regression", plotOutput("regression")),
@@ -61,19 +61,39 @@ body <- dashboardBody(
 
      )
      )
-    )
+    ),
+    fluidRow(
+    box(width = 6,title = "Anova Table",
+        solidHeader = FALSE, status = "warning",
+        tableOutput(outputId = "anova")),
 
+    box(width = 6,title = "Summary",
+        solidHeader = FALSE, status = "warning",
+        tableOutput(outputId = "summary")))
    )),
 
    # TAB 2 = dashboard:
+
    tabItem(tabName = "data",
            fluidRow(
             box(width = 4, solidHeader = TRUE, status = "primary",
-                title = "Raw Data",
-             dataTableOutput(outputId = "data")))
+                               title = "Raw Data",
+                               dataTableOutput(outputId = "data")),
+            box(width = 6, solidHeader = TRUE, status = "primary",
+                title = "Data distribution",
+                plotOutput(outputId = "histogram"))
+
+            )
+            ),
+
+   tabItem(tabName = "about",
+           fluidRow(
+           box(width = 12, status = "success",
+               includeMarkdown("about.md"))
+           )
+           )
+           )
    )
-  )
- )
 
 ui <- dashboardPage(header, sidebar, body)
 

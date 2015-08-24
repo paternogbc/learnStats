@@ -1,9 +1,9 @@
 library(shiny)
 library(ggplot2)
 library(shinydashboard)
-library(data.table)
 library(grid)
 library(markdown)
+library(ggExtra)
 
 
 
@@ -14,7 +14,7 @@ server <- function(input, output) {
   slope <- input$slope
   SD <- input$SD
   sample <- input$sample
-  x <- round(1:sample+rnorm(n=sample, mean= 0.001,sd=0.1), digits = 2)
+  x <- round(1:sample + rnorm(n = sample, mean = 1, sd = 1), digits = 2)
   y <- round(slope * (x) + rnorm(n = sample, mean = 3, sd = SD ), digits = 2)
   mod <- lm(y ~ x, data.frame(y,x))
   ypred <- predict(mod)
@@ -96,16 +96,10 @@ server <- function(input, output) {
          axis.text.y  = element_text(size = 16),
          panel.background=element_rect(fill="white",colour="black")) +
    ylab("% of variance")+
-   xlab("Sum of Squares")
+   xlab("Sums of Squares")
 
  })
 
-
- ### Second output "anova"
- output$anova <- renderTable({
-  anova(lm(y ~ x, Rawdata()))
-
- })
 
  output$reg <- renderPlot({
   ggplot(Rawdata(), aes(y = y, x = x))+
@@ -120,11 +114,33 @@ server <- function(input, output) {
 
  })
 
+ ### Second output "anova"
+ output$anova <- renderTable({
+  anova(lm(y ~ x, Rawdata()))
+ })
 
+ ### Second output "SS"
+ output$summary <- renderTable({
+  summary(lm(y ~ x, Rawdata()))
+
+ })
 
  output$data <- renderDataTable(
   Rawdata()[c(1,2)], options = list(
   searchable = FALSE, searching = FALSE, pageLength = 15))
 
-}
+ output$histogram <- renderPlot({
+ d1 <- ggplot(Rawdata(), aes(y = y, x = x))+
+  geom_point(size = 3, colour = "blue", alpha = .5)+
+  theme(axis.title = element_text(size = 20),
+        axis.text.x  = element_text(size = 0),
+        axis.text.y  = element_text(size = 16),
+        panel.background=element_rect(fill="white",colour="black")) +
+  ylab("Y")+
+  xlab("X")
+  ggExtra::ggMarginal(
+  d1,
+  type = 'histogram')
+})
 
+}
