@@ -12,4 +12,4 @@
 #### This software is Open Source under [AGPL-3.0 license](http://opensource.org/licenses/AGPL-3.0) | The source code for this application is available [here](https://github.com/paternogbc/learnStats/tree/master/apps/SSQ).
 
 ## Author
-*[Gustavo Paterno](https://github.com/paternogbc)* | paternogc@gmail.com 
+*[Gustavo Paterno](https://github.com/paternogbc)* | paternogc@gmail.com

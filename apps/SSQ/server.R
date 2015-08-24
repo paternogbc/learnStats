@@ -5,8 +5,6 @@ library(grid)
 library(markdown)
 library(ggExtra)
 
-
-
 server <- function(input, output) {
 
  ### Saving data:
@@ -138,7 +136,7 @@ server <- function(input, output) {
         panel.background=element_rect(fill="white",colour="black")) +
   ylab("Y")+
   xlab("X")
-  ggExtra::ggMarginal(
+  ggMarginal(
   d1,
   type = 'histogram')
 })
