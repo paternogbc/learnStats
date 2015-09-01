@@ -1,10 +1,10 @@
 Package: learnStats
 Type: Package
-Title: What the Package Does (Title Case)
+Title: An R package to learn basic statistics interactively
 Version: 0.1
 Date: 2015-08-19
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Gustavo B Paterno
+Maintainer: Gustavo B Paterno <paternogbc@gmail.com>
+Description: A set of shiny apps to learn basic statistics
+License: GPL-2
 LazyData: TRUE
